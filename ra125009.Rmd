@@ -235,5 +235,42 @@ plot(x = df$AcidezVolatil,
 
 Irei me  preocupar, nessa parte, com o gráfico de boxplot das variáveis em questão. Isso porque, por meio disso, se é possível verificar possíveis valores discrepantes que podem atrapalhar no modelo de regressão.
 
+``` {r grafico, echo = FALSE}
 
-aaa
+par(mfrow = c(2, 2))
+boxplot(df$AcidezFixa, main = 'Boxplot: Acidez Fixa', pch = 19)
+boxplot(df$AcidezVolatil, main = 'Boxplot: Ácidez Volátil', pch = 19)
+boxplot(df$AcidoCitrico, main = 'Boxplot: Ácido Cítrico', pch = 19)
+boxplot(df$AcucarResidual, main = 'Boxplot: Açúcar Residual', pch = 19)
+boxplot(df$Cloreto, main = 'Boxplot: Cloreto', pch = 19)
+boxplot(df$DioxidoEnxofreLivre, main = 'Boxplot: Dióxido Enxofre Livre', pch = 19)
+boxplot(df$DioxidoEnxofreTotal, main = 'Boxplot: Dióxido Enxofre Total', pch = 19)
+boxplot(df$Densidade, main = 'Boxplot: Densidade', pch = 19)
+#boxplot(df$pH, main = 'Boxplot: pH', pch = 19)
+# TALVEZ TIRAR PH SERIA BOM
+boxplot(df$Sulfato, main = 'Boxplot: Sulfato', pch = 19)
+boxplot(df$Alcool, main = 'Boxplot: Álcool', pch = 19)
+
+```
+
+
+# Construção do modelo linear
+Pela análise dos gráficos de relação, foi necessário ver algumas variáveis que parecem promissoras para o pH.
+**Variáveis escolhidas: ** para este modelo, irei utilizar as variáveis de acidez, açúcar, 
+cloreto, DioxidoEnxofreLivre (é o que faz parte originalmente do dióxido).
+
+``` {r construcao}
+df2 <- df[-c(12)]
+
+modelo <- lm(pH ~ ., 
+             data = df2)
+               
+#(modelo)
+library(MASS)
+library(car)
+stepAIC(modelo, direction = 'both')
+
+```
+
+
+``` {}
