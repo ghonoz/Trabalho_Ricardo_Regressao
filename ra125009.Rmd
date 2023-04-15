@@ -1,0 +1,231 @@
+---
+title: "Trabalho de Regressão Linear"
+author: "Gabriel Lopes Rubinho"
+#date: '2023-04-15'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introdução 
+
+Análise de regressão é uma técnica estatística para investigar possíveis associações entre variáveis, e possívelmente, predizer o valor de uma variável com base na outra. A variável que está sendo usada para predizer alguma outra é denominada de variável independente.  
+No geral, existem dois tipos de regressão: simples e multipla. 
+
+## Regressão Linear Simples
+A regressão linear simples é aquela que estima a relação entre somente duas variáveis. Ou seja, por exemplo, se quisessemos predizer o peso baseado na altura, sem levar em consideração outros aspectos, a regressão linear simples seria o adequado.  
+Sua fórmula é dada por:  
+$$y = \beta_0 + \beta_1 x + \epsilon$$
+onde $\beta_0$ é a interceptação com o eixo y, $\beta_1$ a declividade e $\epsilon$ o erro. Assumimos que os erros tem média 0 e variância desconhecida $\sigma^2$. Os parâmetros são usualmente chamados de coeficientes de regressão.
+
+A estimação de $\beta_0$ e $\beta_1$ é normalmente feita por mínimos quadrados.
+
+## Regressão Linear Múltipla
+A regressão linear múltipla é quando precisamos mostrar possível relação entre uma variável dependente e duas ou mais variáveis independentes. No exemplo da regressão simples, poderíamos querer predizer o peso baseado na altura e também no índice de colesterol.  
+Sua fórmula, diferente da simples, inclui k possiveis regressores. 
+$$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + ... + \beta_k x_k + \epsilon$$
+Casos ainda mais complexos da regressão múltipla podem surgir, no caso, utilizando polinômios. 
+$$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2^2 + ... + \beta_k x_k^k + \epsilon$$
+A estimação dos parâmetros, nos dois casos, ainda é normalmente utilizando mínimos quadrados.  
+
+### Exemplo prático
+
+Suponhamos que tenhamos a base de dados mtcars, e queiramos estimar a variável mpg pela wt, para testar uma possível associação. 
+
+
+```{r cars}
+data(mtcars)
+plot(mtcars$wt, mtcars$mpg, 
+     pch = 16, 
+     main = "Associação entre milhas por galão e Peso (em libra)",
+     xlab = 'Milhas por galão',
+     ylab = 'Peso (em libra)',
+     frame = FALSE)
+abline(lm(mtcars$mpg ~ mtcars$wt, data = mtcars), col = "blue")
+
+```
+
+É possível observar uma possível associação entre as variáveis, pela regressão linear simples. Obviamente, na prática, seria necessário verificar média de resíduos, entre outras proposições, mas no ''teste de olho'', parece haver boas chances de ser modelado por regressão.
+
+# Objetivo
+
+Neste trabalho, irei utilizar a base de dados WineQualityWhite, que é uma base de dados que trata de vinhos com vários atributos, e os pesquisadores definiram uma variável resposta: qualidade. Ela varia de 0 a 10, em que 0 é péssimo e 10 é excelente.  
+No entanto, como podemos tratar a qualidade como fator, não me preocuparei em fazer relação dessa variável em específico, pois teria que ter um tratado mais carinhoso com Regressão Logística, que não foi vista no curso.
+
+## Descrição das variáveis
+**Acidez Fixa: ** Medida em gramas/litro, é responsável principalmente pela sensação de frescor na bebida  
+**Acidez Volatil: ** É relacionada com a formação de ácido acético e compostos relacionados no vinho, por conta de ação de bactérias durante o processo de vinificação  
+**Acido Cítrico: ** É usado para aumentar acidez, complementar um sabor.  
+**Açúcar residual: ** É o açúcar natural da uva.  
+**Cloreto: ** Participa ativamente da cor, sabor e aroma.  
+**Dióxido de enxofre livre: ** Age como um antioxicidante e antimicróbios para deixar o vinho mais durável.  
+**Dióxido de enxofre total: ** É a porção livre mais as que são devido a outras substâncias no vinho como aldeídos  
+**Densidade: ** Relação entre a massa do vinho e seu volume ocupado  
+**pH: ** Determina os níveis de ácidez do vinho  
+**Sulfato: ** Atuam como conservantes e intensificadores  
+**Álcool: ** Resultado da fermentação dos açúcares da uva.  
+**Qualidade: ** Nível de qualidade do vinho, em que 0 é péssimo e 10 é excelente
+
+
+``` {r carregamento banco de dados, warning = FALSE, message = FALSE}
+library(dplyr)
+library(data.table)
+library(rmarkdown)
+
+df <- 'WineQualityWhite.csv' %>% 
+  read.csv(sep = ',', header = TRUE) %>%
+  data.table::setnames(new = c('AcidezFixa', 'AcidezVolatil', 'AcidoCitrico',
+                               'AcucarResidual', 'Cloreto', 'DioxidoEnxofreLivre', 
+                               'DioxidoEnxofreTotal', 'Densidade', 'pH', 'Sulfato', 
+                               'Alcool', 'Qualidade'),
+                       old = c('fixedacidity', 'volatileacidity',
+                               'citricacid', 'residualsugar',
+                               'chlorides', 'freesulfurdioxide',
+                               'totalsulfurdioxide', 'density', 'pH', 
+                               'sulphates', 'alcohol', 'quality'))
+
+rmarkdown::paged_table(df)
+
+```
+
+
+
+# Análise Exploratória dos Dados
+Nesta etapa, será de objetivo primário verificar outliers nas variáveis. Isso porque, quanto mais outliers o modelo tiver, mais ele será pertubado. Por isso, é importante selecionar as variáveis que tenham o menor número de variáveis possíveis. Caso isso não for possível (isso é, todas as variáveis tiver um número alto de outliers), será feito a regressão mesmo assim, mas sem muita certeza se os resultados estão certos.
+
+``` {r laco para grafico, warning = FALSE, message = FALSE }
+
+###### ÁCIDEZ FIXA
+
+
+par(mfrow = c(2, 5))
+plot(x = df$AcidezFixa,
+     y = df$AcidezVolatil,
+     xlab = 'Ácidez Fixa',
+     ylab = 'Ácidez Volatil',
+     pch = 16)
+
+
+plot(x = df$AcidezFixa, 
+     y = df$AcidoCitrico,
+     xlab = 'Ácidez Fixa',
+     ylab = 'Ácido Cítrico',
+     pch = 16)
+
+plot(x = df$AcidezFixa,
+     y = df$AcucarResidual,
+     xlab = 'Ácidez Fixa',
+     ylab = 'Açúcar Resídual',
+     pch = 16)
+
+
+plot(x = df$AcidezFixa,
+     y = df$Cloreto,
+     xlab = 'Ácidez Fixa',
+     ylab = 'Cloreto',
+     pch = 16)
+
+plot(x = df$AcidezFixa,
+     y = df$DioxidoEnxofreLivre,
+     xlab = 'Ácidez Fixa',
+     ylab = 'Dióxido de Enxofre Livre',
+     pch = 16)
+
+plot(x = df$AcidezFixa,
+     y = df$DioxidoEnxofreTotal,
+     xlab = 'Ácidez Fixa',
+     ylab = 'Dióxido de Enxofre Total',
+     pch = 16)
+
+plot(x = df$AcidezFixa,
+     y = df$Densidade,
+     xlab = 'Ácidez Fixa',
+     ylab = 'Densidade',
+     pch = 16)
+
+plot(x = df$AcidezFixa,
+     y = df$pH,
+     xlab = 'Ácidez Fixa',
+     ylab = 'pH',
+     pch = 16)
+
+plot(x = df$AcidezFixa,
+     y = df$Sulfato,
+     xlab = 'Ácidez Fixa',
+     ylab = 'Sulfato',
+     pch = 16)
+
+plot(x = df$AcidezFixa,
+     y = df$Alcool,
+     xlab = 'Ácidez Fixa',
+     ylab = 'Álcool',
+     pch = 16)
+
+```
+
+
+
+``` {r teste}
+
+###### ÁCIDEZ VOLATIL
+
+par(mfrow = c(4, 2))
+
+plot(x = df$AcidezVolatil,
+     y = df$AcidoCitrico,
+     xlab = 'Ácidez Volatil',
+     ylab = 'Ácido Cítrico',
+     pch = 16)
+
+plot(x = df$AcidezVolatil,
+     y = df$AcucarResidual,
+     xlab = 'Ácidez Volatil',
+     ylab = 'Açúcar Residual',
+     pch = 16)
+
+plot(x = df$AcidezVolatil,
+     y = df$Cloreto,
+     xlab = 'Ácidez Volatil',
+     ylab = 'Cloreto',
+     pch = 16)
+
+plot(x = df$AcidezVolatil,
+     y = df$DioxidoEnxofreLivre,
+     xlab = 'Ácidez Volatil',
+     ylab = 'Dióxido de Enxofre Livre',
+     pch = 16)
+
+plot(x = df$AcidezVolatil,
+     y = df$DioxidoEnxofreTotal,
+     xlab = 'Ácidez Volatil',
+     ylab = 'Dióxido de Enxofre Total',
+     pch = 16)
+
+plot(x = df$AcidezVolatil,
+     y = df$Densidade,
+     xlab = 'Ácidez Volatil',
+     ylab = 'Densidade',
+     pch = 16)
+
+plot(x = df$AcidezVolatil,
+     y = df$pH,
+     xlab = 'Ácidez Volatil',
+     ylab = 'pH',
+     pch = 16)
+
+plot(x = df$AcidezVolatil,
+     y = df$Sulfato,
+     xlab = 'Ácidez Volatil',
+     ylab = 'Sulfato',
+     pch = 16)
+
+plot(x = df$AcidezVolatil,
+     y = df$Alcool,
+     xlab = 'Ácidez Volatil',
+     ylab = 'Álcool',
+     pch = 16)
+
+
+```
