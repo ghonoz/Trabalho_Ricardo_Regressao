@@ -90,7 +90,7 @@ rmarkdown::paged_table(df)
 
 ```
 
-
+Neste trabalho, me preocuparei com o nível de pH, em relação a outras variáveis.
 
 # Análise Exploratória dos Dados
 Nesta etapa, será de objetivo primário verificar outliers nas variáveis. Isso porque, quanto mais outliers o modelo tiver, mais ele será pertubado. Por isso, é importante selecionar as variáveis que tenham o menor número de variáveis possíveis. Caso isso não for possível (isso é, todas as variáveis tiver um número alto de outliers), será feito a regressão mesmo assim, mas sem muita certeza se os resultados estão certos.
@@ -229,3 +229,11 @@ plot(x = df$AcidezVolatil,
 
 
 ```
+
+
+## Boxplot 
+
+Irei me  preocupar, nessa parte, com o gráfico de boxplot das variáveis em questão. Isso porque, por meio disso, se é possível verificar possíveis valores discrepantes que podem atrapalhar no modelo de regressão.
+
+
+aaa
