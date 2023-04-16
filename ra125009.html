@@ -1891,6 +1891,8 @@ variáveis que parecem promissoras para o pH. <strong>Variáveis
 escolhidas: </strong> para este modelo, irei utilizar as variáveis de
 acidez, açúcar, cloreto, DioxidoEnxofreLivre (é o que faz parte
 originalmente do dióxido).</p>
+<p>É possível ver que não há como representar essas variáveis de maneira
+positiva por meio de regressão linear múltipla.</p>
 <pre class="r"><code>df2 &lt;- df[-c(12)]
 
 modelo &lt;- lm(pH ~ ., 
@@ -1912,7 +1914,7 @@ library(MASS)</code></pre>
 <pre><code>## The following object is masked from &#39;package:dplyr&#39;:
 ## 
 ##     recode</code></pre>
-<pre class="r"><code>stepAIC(modelo, direction = &#39;both&#39;)</code></pre>
+<pre class="r"><code>aic &lt;- stepAIC(modelo, direction = &#39;both&#39;)</code></pre>
 <pre><code>## Start:  AIC=-19873.53
 ## pH ~ AcidezFixa + AcidezVolatil + AcidoCitrico + AcucarResidual + 
 ##     Cloreto + DioxidoEnxofreLivre + DioxidoEnxofreTotal + Densidade + 
@@ -1930,6 +1932,7 @@ library(MASS)</code></pre>
 ## - Sulfato              1    1.8545  86.174 -19769
 ## - AcucarResidual       1    2.5797  86.899 -19728
 ## - AcidezFixa           1   16.1833 100.503 -19016</code></pre>
+<pre class="r"><code>aic</code></pre>
 <pre><code>## 
 ## Call:
 ## lm(formula = pH ~ AcidezFixa + AcidezVolatil + AcidoCitrico + 
@@ -1945,7 +1948,6 @@ library(MASS)</code></pre>
 ##          -4.502e-04            5.474e-04            1.636e-05  
 ##             Sulfato               Alcool  
 ##           1.733e-01            3.979e-03</code></pre>
-<p>``` {}</p>
 </div>
 
 

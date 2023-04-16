@@ -260,17 +260,22 @@ Pela análise dos gráficos de relação, foi necessário ver algumas variáveis
 cloreto, DioxidoEnxofreLivre (é o que faz parte originalmente do dióxido).
 
 ``` {r construcao}
-df2 <- df[-c(12)]
+df2 <- df[, -12]
 
-modelo <- lm(pH ~ ., 
-             data = df2)
-               
-#(modelo)
-library(MASS)
-library(car)
-stepAIC(modelo, direction = 'both')
+fit1 <- lm(formula = pH ~ . ,data = df2)
+summary(fit1)
+stepAIC(fit1)
 
 ```
+É possível ver que Ácido Cítrico, Ácidez Fixa, Açúcar Residual, Cloreto, DioxidoEnxofreTotal, Densidade, Sulfato e álcool são possívelmente significativos.
+
+``` {r construction}
 
 
-``` {}
+modelo <- lm(pH ~ AcidoCitrico + AcidezFixa + AcucarResidual + Cloreto + DioxidoEnxofreTotal + Densidade + Sulfato + Alcool, data = df2)
+summary(modelo)
+               
+
+
+
+```
