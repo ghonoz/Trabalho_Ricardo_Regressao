@@ -1,9 +1,104 @@
 ---
 title: "Trabalho de Regressão Linear"
 author: "Gabriel Lopes Rubinho"
-#date: '2023-04-15'
-output: html_document
+output:
+  html_document: default
+  word_document: default
 ---
+``` {css, echo = FALSE}
+#content{
+  max-width:100%;
+  margin-left: 0px;
+}
+body{
+  text-align: justify;
+  font-size: 14px;
+  font-family: Arial;
+  line-height: 30px;
+}
+
+.title {
+  text-align: center;
+  color: #8B0000;
+}
+
+.subtitle {
+  color: #8B0000;
+}
+
+h1, h2, h3, h4, h5, h6, legend {
+  color: #8B0000;
+}
+
+#sidebar a {
+    background-color: #8B0000;
+}
+h1 {
+  text-align: center;
+}
+
+#sidebar a:hover {
+    background-color: #8B0000;
+    color: #FFFFFF;
+}
+
+#sidebar {
+  background: #5A7B9C;
+  display: none; # Remove a barra lateral para impressão
+}
+
+#sidebar h2 {
+  background-color: #8B0000;
+}
+
+#postamble {
+  background:#8B0000;
+  border-top:solid 10px #5A7B9C;
+}
+b, strong {
+    color: #8B0000;
+}
+
+#main table:not(.dataTable) thead th {
+    border-bottom: 2px solid #8B0000;
+}
+
+#main table:not(.dataTable) {
+    border-bottom: 2px solid #8B0000;
+    border-top: 2px solid #8B0000;
+}
+table:not(.dataTable) tr:nth-child(2n-1) {
+    background-color: white;
+}
+#main table:not(.dataTable) td, #main table:not(.dataTable) th {
+    border: 1px solid white;
+}
+tfoot {
+    display: table-footer-group;
+    vertical-align: middle;
+    border-color: white;
+    background-color: white;
+    border-top: 2px solid #8B0000;
+    font: normal 100%/2 arial,sans-serif;
+}
+table caption {
+    color: #000000;
+    font: normal 100%/1 arial,sans-serif;
+    padding: 0.5em 0;
+    text-align: justify;
+    line-height: 20px;
+}
+.math {
+font-size: small;
+}
+.html-widget {
+    margin: auto;
+}
+```
+
+
+
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -171,61 +266,61 @@ plot(x = df$AcidezFixa,
 
 ###### ÁCIDEZ VOLATIL
 
-par(mfrow = c(4, 2))
-
-plot(x = df$AcidezVolatil,
-     y = df$AcidoCitrico,
-     xlab = 'Ácidez Volatil',
-     ylab = 'Ácido Cítrico',
-     pch = 16)
-
-plot(x = df$AcidezVolatil,
-     y = df$AcucarResidual,
-     xlab = 'Ácidez Volatil',
-     ylab = 'Açúcar Residual',
-     pch = 16)
-
-plot(x = df$AcidezVolatil,
-     y = df$Cloreto,
-     xlab = 'Ácidez Volatil',
-     ylab = 'Cloreto',
-     pch = 16)
-
-plot(x = df$AcidezVolatil,
-     y = df$DioxidoEnxofreLivre,
-     xlab = 'Ácidez Volatil',
-     ylab = 'Dióxido de Enxofre Livre',
-     pch = 16)
-
-plot(x = df$AcidezVolatil,
-     y = df$DioxidoEnxofreTotal,
-     xlab = 'Ácidez Volatil',
-     ylab = 'Dióxido de Enxofre Total',
-     pch = 16)
-
-plot(x = df$AcidezVolatil,
-     y = df$Densidade,
-     xlab = 'Ácidez Volatil',
-     ylab = 'Densidade',
-     pch = 16)
-
-plot(x = df$AcidezVolatil,
-     y = df$pH,
-     xlab = 'Ácidez Volatil',
-     ylab = 'pH',
-     pch = 16)
-
-plot(x = df$AcidezVolatil,
-     y = df$Sulfato,
-     xlab = 'Ácidez Volatil',
-     ylab = 'Sulfato',
-     pch = 16)
-
-plot(x = df$AcidezVolatil,
-     y = df$Alcool,
-     xlab = 'Ácidez Volatil',
-     ylab = 'Álcool',
-     pch = 16)
+# par(mfrow = c(4, 2))
+# 
+# plot(x = df$AcidezVolatil,
+#      y = df$AcidoCitrico,
+#      xlab = 'Ácidez Volatil',
+#      ylab = 'Ácido Cítrico',
+#      pch = 16)
+# 
+# plot(x = df$AcidezVolatil,
+#      y = df$AcucarResidual,
+#      xlab = 'Ácidez Volatil',
+#      ylab = 'Açúcar Residual',
+#      pch = 16)
+# 
+# plot(x = df$AcidezVolatil,
+#      y = df$Cloreto,
+#      xlab = 'Ácidez Volatil',
+#      ylab = 'Cloreto',
+#      pch = 16)
+# 
+# plot(x = df$AcidezVolatil,
+#      y = df$DioxidoEnxofreLivre,
+#      xlab = 'Ácidez Volatil',
+#      ylab = 'Dióxido de Enxofre Livre',
+#      pch = 16)
+# 
+# plot(x = df$AcidezVolatil,
+#      y = df$DioxidoEnxofreTotal,
+#      xlab = 'Ácidez Volatil',
+#      ylab = 'Dióxido de Enxofre Total',
+#      pch = 16)
+# 
+# plot(x = df$AcidezVolatil,
+#      y = df$Densidade,
+#      xlab = 'Ácidez Volatil',
+#      ylab = 'Densidade',
+#      pch = 16)
+# 
+# plot(x = df$AcidezVolatil,
+#      y = df$pH,
+#      xlab = 'Ácidez Volatil',
+#      ylab = 'pH',
+#      pch = 16)
+# 
+# plot(x = df$AcidezVolatil,
+#      y = df$Sulfato,
+#      xlab = 'Ácidez Volatil',
+#      ylab = 'Sulfato',
+#      pch = 16)
+# 
+# plot(x = df$AcidezVolatil,
+#      y = df$Alcool,
+#      xlab = 'Ácidez Volatil',
+#      ylab = 'Álcool',
+#      pch = 16)
 
 
 ```
@@ -261,7 +356,7 @@ cloreto, DioxidoEnxofreLivre (é o que faz parte originalmente do dióxido).
 
 ``` {r construcao}
 df2 <- df[, -12]
-
+library(MASS)
 fit1 <- lm(formula = pH ~ . ,data = df2)
 summary(fit1)
 stepAIC(fit1)
@@ -272,7 +367,7 @@ stepAIC(fit1)
 ``` {r construction}
 
 
-modelo <- lm(pH ~ AcidoCitrico + AcidezFixa + AcucarResidual + Cloreto + DioxidoEnxofreTotal + Densidade + Sulfato + Alcool, data = df2)
+modelo <- lm(pH ~ AcidoCitrico + AcidezFixa + AcucarResidual + Cloreto + DioxidoEnxofreTotal + Densidade + Sulfato + Alcool + DioxidoEnxofreLivre, data = df2)
 summary(modelo)
                
 
