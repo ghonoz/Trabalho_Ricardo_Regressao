@@ -97,9 +97,6 @@ font-size: small;
 ```
 
 
-
-
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -127,7 +124,7 @@ A estimação dos parâmetros, nos dois casos, ainda é normalmente utilizando m
 
 ### Exemplo prático
 
-Suponhamos que tenhamos a base de dados mtcars, e queiramos estimar a variável mpg pela wt, para testar uma possível associação. 
+Suponhamos que tenhamos a base de dados mtcars, e seja de interesse estimar a variável mpg pela wt, para testar uma possível associação. 
 
 
 ```{r cars}
@@ -147,6 +144,7 @@ abline(lm(mtcars$mpg ~ mtcars$wt, data = mtcars), col = "blue")
 # Objetivo
 
 Neste trabalho, irei utilizar a base de dados WineQualityWhite, que é uma base de dados que trata de vinhos com vários atributos, e os pesquisadores definiram uma variável resposta: qualidade. Ela varia de 0 a 10, em que 0 é péssimo e 10 é excelente.  
+A base de dados foi criada por Paulo Cortez (Universidade de Minho), Antonio Cerdeira, Fernando Almeida, Telmo Matos and Jose Reis (CVRVV). Ela foi usada em um artigo, denominado "Modeling wine preferences by data mining from physicochemical properties", no qual se foi proposto uma abordagem de mineração de dados para prever a preferência humana quanto ao sabor de vinhos com diferentes quantidades de ingredientes. 
 No entanto, como podemos tratar a qualidade como fator, não me preocuparei em fazer relação dessa variável em específico, pois teria que ter um tratado mais carinhoso com Regressão Logística, que não foi vista no curso.
 
 ## Descrição das variáveis
@@ -185,7 +183,7 @@ rmarkdown::paged_table(df)
 
 ```
 
-Neste trabalho, me preocuparei com o nível de pH, em relação a outras variáveis.
+Neste trabalho, me preocuparei com o nível de Ácidez Fixa, em relação a outras variáveis.
 
 # Análise Exploratória dos Dados
 Nesta etapa, será de objetivo primário verificar outliers nas variáveis. Isso porque, quanto mais outliers o modelo tiver, mais ele será pertubado. Por isso, é importante selecionar as variáveis que tenham o menor número de variáveis possíveis. Caso isso não for possível (isso é, todas as variáveis tiver um número alto de outliers), será feito a regressão mesmo assim, mas sem muita certeza se os resultados estão certos.
@@ -357,8 +355,8 @@ cloreto, DioxidoEnxofreLivre (é o que faz parte originalmente do dióxido).
 ``` {r construcao}
 df2 <- df[, -12]
 library(MASS)
-fit1 <- lm(formula = pH ~ . ,data = df2)
-summary(fit1)
+fit1 <- lm(formula = AcidezFixa ~ . ,data = df2)
+#summary(fit1)
 stepAIC(fit1)
 
 ```
@@ -367,7 +365,7 @@ stepAIC(fit1)
 ``` {r construction}
 
 
-modelo <- lm(pH ~ AcidoCitrico + AcidezFixa + AcucarResidual + Cloreto + DioxidoEnxofreTotal + Densidade + Sulfato + Alcool + DioxidoEnxofreLivre, data = df2)
+modelo <- lm(AcidezFixa ~ AcidoCitrico + pH + AcucarResidual + Cloreto + DioxidoEnxofreTotal + Densidade + Sulfato + Alcool + DioxidoEnxofreLivre, data = df2)
 summary(modelo)
                
 
