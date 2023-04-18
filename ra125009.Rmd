@@ -188,79 +188,39 @@ Neste trabalho, me preocuparei com o nível de Ácidez Fixa, em relação a outr
 # Análise Exploratória dos Dados
 Nesta etapa, será de objetivo primário verificar outliers nas variáveis. Isso porque, quanto mais outliers o modelo tiver, mais ele será pertubado. Por isso, é importante selecionar as variáveis que tenham o menor número de variáveis possíveis. Caso isso não for possível (isso é, todas as variáveis tiver um número alto de outliers), será feito a regressão mesmo assim, mas sem muita certeza se os resultados estão certos.
 
-``` {r laco para grafico, warning = FALSE, message = FALSE }
+``` {r laco para grafico, warning = FALSE, message = FALSE, fig.align='center', fig.width=18,fig.height=18}
 
 ###### ÁCIDEZ FIXA
+panel.cor     <- function(x, y, cex.cor = 1.2, method = "pearson", ...) 
+{
+    options(warn = -1)                                            
+    usr <- par("usr"); on.exit(par(usr))                          
+    par(usr = c(0, 1, 0, 1))                                      
+    r <- cor(x, y, method = method, use = "pair")                 
+    n <- sum(complete.cases(x, y))                                
+    txt <- format(r, digits = 3)                                  
+    txt2 <- paste0("r= ", txt, '\n', '\n', 'n= ', n)              
+    text(0.5, 0.5, txt2, cex = cex.cor, ...)                      
+}
 
 
-par(mfrow = c(2, 5))
-plot(x = df$AcidezFixa,
-     y = df$AcidezVolatil,
-     xlab = 'Ácidez Fixa',
-     ylab = 'Ácidez Volatil',
-     pch = 16)
-
-
-plot(x = df$AcidezFixa, 
-     y = df$AcidoCitrico,
-     xlab = 'Ácidez Fixa',
-     ylab = 'Ácido Cítrico',
-     pch = 16)
-
-plot(x = df$AcidezFixa,
-     y = df$AcucarResidual,
-     xlab = 'Ácidez Fixa',
-     ylab = 'Açúcar Resídual',
-     pch = 16)
-
-
-plot(x = df$AcidezFixa,
-     y = df$Cloreto,
-     xlab = 'Ácidez Fixa',
-     ylab = 'Cloreto',
-     pch = 16)
-
-plot(x = df$AcidezFixa,
-     y = df$DioxidoEnxofreLivre,
-     xlab = 'Ácidez Fixa',
-     ylab = 'Dióxido de Enxofre Livre',
-     pch = 16)
-
-plot(x = df$AcidezFixa,
-     y = df$DioxidoEnxofreTotal,
-     xlab = 'Ácidez Fixa',
-     ylab = 'Dióxido de Enxofre Total',
-     pch = 16)
-
-plot(x = df$AcidezFixa,
-     y = df$Densidade,
-     xlab = 'Ácidez Fixa',
-     ylab = 'Densidade',
-     pch = 16)
-
-plot(x = df$AcidezFixa,
-     y = df$pH,
-     xlab = 'Ácidez Fixa',
-     ylab = 'pH',
-     pch = 16)
-
-plot(x = df$AcidezFixa,
-     y = df$Sulfato,
-     xlab = 'Ácidez Fixa',
-     ylab = 'Sulfato',
-     pch = 16)
-
-plot(x = df$AcidezFixa,
-     y = df$Alcool,
-     xlab = 'Ácidez Fixa',
-     ylab = 'Álcool',
-     pch = 16)
+pairs(df[,c(1:11)], lower.panel = panel.smooth, upper.panel = panel.cor)
 
 ```
 
 
 
 ``` {r teste}
+
+quantidade_outliers <- function(vetorDeColunas) {
+  return(
+    length(boxplot.stats(vetorDeColunas)$out)/length(vetorDeColunas)*100 %>% 
+      signif(digits = 2) 
+  )
+}
+
+sapply(df[, c(1:11)], quantidade_outliers)
+
 
 ###### ÁCIDEZ VOLATIL
 
@@ -322,7 +282,7 @@ plot(x = df$AcidezFixa,
 
 
 ```
-
+Se foi possível ver as variáveis com maiores números de outliers. É bem provável que elas, de certa forma, causem algum problema no ajuste de regressão.
 
 ## Boxplot 
 
